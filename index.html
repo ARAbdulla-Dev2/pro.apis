@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>YT-DL by ARAbdulla-Dev</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" href="./img/small.png" type="image/png">
+    <!-- Open Graph Meta Tags -->
+    <meta property="og:title" content="Thampaddai Maha Vidyalaya" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://yt-dl.arabdullah.top" />
+    <meta property="og:description" content="YT-DL mp4 and mp3 by ARAbdulla-Dev" />
+    <meta property="og:image" content="./img/Gemini_Generated_Image_pdmf3fpdmf3fpdmf.png" />
+    <meta property="og:image:secure_url" content="./img/Gemini_Generated_Image_pdmf3fpdmf3fpdmf.png" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .palestine-banner {
+            background: linear-gradient(135deg, #000 0%, #ff0000 30%, #ffffff 50%, #00ff00 70%, #000 100%);
+            padding: 0.8rem 2rem;
+            text-align: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: white;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+            position: relative;
+            overflow: hidden;
+            border-bottom: 3px solid rgba(255,255,255,0.3);
+            animation: bannerPulse 3s ease-in-out infinite;
+        }
+
+        .palestine-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            animation: bannerShine 4s ease-in-out infinite;
+        }
+
+        @keyframes bannerPulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        @keyframes bannerShine {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .palestine-content {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 1rem;
+            flex-wrap: wrap;
+        }
+
+        .flag-img {
+            height: 30px;
+            border-radius: 4px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .donate-btn {
+            background: rgba(255,255,255,0.2);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            border: 1px solid rgba(255,255,255,0.3);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+        }
+
+        .donate-btn:hover {
+            background: rgba(255,255,255,0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .floating-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        .shape {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float 20s infinite ease-in-out;
+        }
+
+        .shape:nth-child(1) {
+            width: 100px;
+            height: 100px;
+            top: 20%;
+            left: 10%;
+            animation-delay: -2s;
+        }
+
+        .shape:nth-child(2) {
+            width: 60px;
+            height: 60px;
+            top: 60%;
+            right: 15%;
+            animation-delay: -8s;
+        }
+
+        .shape:nth-child(3) {
+            width: 80px;
+            height: 80px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: -15s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-30px) rotate(120deg); }
+            66% { transform: translateY(20px) rotate(240deg); }
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 3rem;
+            animation: slideDown 0.8s ease-out;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            font-size: 3rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            background: linear-gradient(45deg, #ff6b6b, #feca57, #48dbfb, #ff9ff3);
+            background-size: 400% 400%;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: gradientShift 3s ease infinite;
+        }
+
+        .subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 0.5rem;
+        }
+
+        .developer {
+            font-size: 0.9rem;
+            opacity: 0.7;
+            font-style: italic;
+        }
+
+        .main-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(20px);
+            border-radius: 20px;
+            padding: 3rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.1);
+            animation: slideUp 0.8s ease-out 0.2s both;
+            transition: transform 0.3s ease;
+        }
+
+        .main-card:hover {
+            transform: translateY(-5px);
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .input-group {
+            margin-bottom: 2rem;
+        }
+
+        .input-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .url-input {
+            width: 100%;
+            padding: 1rem 1.5rem;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.9);
+            color: #333;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        .url-input:focus {
+            outline: none;
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+            background: rgba(255, 255, 255, 1);
+        }
+
+        .format-selector {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            justify-content: center;
+        }
+
+        .format-btn {
+            flex: 1;
+            max-width: 200px;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 15px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .format-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .format-btn:hover::before {
+            left: 100%;
+        }
+
+        .format-btn.active {
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            border-color: rgba(255, 255, 255, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .format-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .download-btn {
+            width: 100%;
+            padding: 1.2rem 2rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            border: none;
+            border-radius: 15px;
+            background: linear-gradient(45deg, #ff6b6b, #feca57);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(255, 107, 107, 0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .download-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .download-btn:hover::before {
+            left: 100%;
+        }
+
+        .download-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 107, 107, 0.4);
+        }
+
+        .download-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .download-btn:disabled {
+            opacity: 0.7;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .loader {
+            display: none;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+
+        .spinner {
+            width: 50px;
+            height: 50px;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            border-top-color: #ff6b6b;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        .result-card {
+            display: none;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 2rem;
+            margin-top: 2rem;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            animation: slideUp 0.5s ease-out;
+        }
+
+        .video-info {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            align-items: center;
+        }
+
+        .thumbnail {
+            width: 120px;
+            height: 90px;
+            border-radius: 10px;
+            object-fit: cover;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .video-details h3 {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            line-height: 1.4;
+        }
+
+        .quality-options {
+            display: grid;
+            gap: 1rem;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        }
+
+        .quality-btn {
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            color: white;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            text-align: center;
+            font-weight: 600;
+        }
+
+        .quality-btn:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        }
+
+        .error-message {
+            background: rgba(255, 107, 107, 0.2);
+            border: 1px solid rgba(255, 107, 107, 0.5);
+            border-radius: 10px;
+            padding: 1rem;
+            margin: 1rem 0;
+            color: #ff6b6b;
+            display: none;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
+        }
+
+        .footer {
+            text-align: center;
+            margin-top: 3rem;
+            opacity: 0.8;
+            animation: fadeIn 1s ease-out 0.5s both;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 0.8; }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+
+            .main-card {
+                padding: 2rem 1.5rem;
+            }
+
+            .logo {
+                font-size: 2.5rem;
+            }
+
+            .format-selector {
+                flex-direction: column;
+            }
+
+            .video-info {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .quality-options {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo {
+                font-size: 2rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+
+            .url-input {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="palestine-banner">
+        <div class="palestine-content">
+            <img src="https://cdn.countryflags.com/thumbs/palestine/flag-square-250.png" alt="Palestine Flag" class="flag-img">
+            <span><i class="fas fa-heart"></i> #FreePalestine - Stand with humanity</span>
+            <a href="https://matwproject.org/crisis-and-emergencies/palestine" target="_blank" class="donate-btn">
+                <i class="fas fa-hand-holding-heart"></i> Donate Now
+            </a>
+        </div>
+    </div>
+
+    <div class="animated-bg"></div>
+    <div class="floating-shapes">
+        <div class="shape"></div>
+        <div class="shape"></div>
+        <div class="shape"></div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <h1 class="logo">YT-DL</h1>
+            <p class="subtitle">Modern YouTube Video & Audio Downloader</p>
+            <p class="developer">Developed by <a href="https://arabdullah.top" target="_blank">ARAbdulla-Dev</a></p>
+        </div>
+
+        <div class="main-card">
+            <div class="input-group">
+                <label class="input-label" for="urlInput">
+                    <i class="fab fa-youtube"></i> YouTube Video URL
+                </label>
+                <input 
+                    type="url" 
+                    id="urlInput" 
+                    class="url-input" 
+                    placeholder="https://www.youtube.com/watch?v=..."
+                    autocomplete="off"
+                >
+            </div>
+
+            <div class="format-selector">
+                <button class="format-btn active" data-format="mp4">
+                    <i class="fas fa-video"></i> Video (MP4)
+                </button>
+                <button class="format-btn" data-format="mp3">
+                    <i class="fas fa-music"></i> Audio (MP3)
+                </button>
+            </div>
+
+            <button class="download-btn" id="downloadBtn">
+                <i class="fas fa-rocket"></i> Get Download Links
+            </button>
+
+            <div class="loader" id="loader">
+                <div class="spinner"></div>
+            </div>
+
+            <div class="error-message" id="errorMessage"></div>
+
+            <div class="result-card" id="resultCard">
+                <div class="video-info" id="videoInfo"></div>
+                <div class="quality-options" id="qualityOptions"></div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p><i class="fas fa-bolt"></i> Fast, secure, and reliable YouTube downloads • <i class="fas fa-shield-alt"></i> No registration required</p>
+        </div>
+    </div>
+
+    <script>
+        class YTDownloader {
+            constructor() {
+                this.currentFormat = 'mp4';
+                this.apiKey = '123';
+                this.baseUrl = 'http://localhost:3000/api';
+                this.init();
+            }
+
+            init() {
+                this.setupEventListeners();
+                this.setupFormatSelector();
+            }
+
+            setupEventListeners() {
+                const downloadBtn = document.getElementById('downloadBtn');
+                const urlInput = document.getElementById('urlInput');
+
+                downloadBtn.addEventListener('click', () => this.handleDownload());
+                
+                urlInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        this.handleDownload();
+                    }
+                });
+
+                urlInput.addEventListener('input', () => {
+                    this.hideError();
+                    this.hideResult();
+                });
+            }
+
+            setupFormatSelector() {
+                const formatBtns = document.querySelectorAll('.format-btn');
+                
+                formatBtns.forEach(btn => {
+                    btn.addEventListener('click', () => {
+                        formatBtns.forEach(b => b.classList.remove('active'));
+                        btn.classList.add('active');
+                        this.currentFormat = btn.dataset.format;
+                        this.hideResult();
+                    });
+                });
+            }
+
+            async handleDownload() {
+                const url = document.getElementById('urlInput').value.trim();
+                
+                if (!url) {
+                    this.showError('Please enter a YouTube URL');
+                    return;
+                }
+
+                if (!this.isValidYouTubeUrl(url)) {
+                    this.showError('Please enter a valid YouTube URL');
+                    return;
+                }
+
+                this.showLoader();
+                this.hideError();
+                this.hideResult();
+
+                try {
+                    const data = await this.fetchVideoData(url);
+                    this.displayResult(data);
+                } catch (error) {
+                    console.error('Download error:', error);
+                    this.showError('Failed to fetch video data. Please try again.');
+                } finally {
+                    this.hideLoader();
+                }
+            }
+
+            isValidYouTubeUrl(url) {
+                const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)[\w-]+/;
+                return youtubeRegex.test(url);
+            }
+
+            async fetchVideoData(url) {
+                const endpoint = this.currentFormat === 'mp4' ? 'ytmp4' : 'ytmp3';
+                const apiUrl = `${this.baseUrl}/${endpoint}?url=${encodeURIComponent(url)}&apiKey=${this.apiKey}`;
+                
+                const response = await fetch(apiUrl);
+                
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                
+                return await response.json();
+            }
+
+            displayResult(data) {
+                const resultCard = document.getElementById('resultCard');
+                const videoInfo = document.getElementById('videoInfo');
+                const qualityOptions = document.getElementById('qualityOptions');
+
+                // Display video info
+                videoInfo.innerHTML = `
+                    <img src="${data.thumbnail}" alt="Thumbnail" class="thumbnail">
+                    <div class="video-details">
+                        <h3>${this.escapeHtml(data.title)}</h3>
+                    </div>
+                `;
+
+                // Display quality options
+                qualityOptions.innerHTML = '';
+                
+                data.formats.forEach(format => {
+                    const qualityBtn = document.createElement('a');
+                    qualityBtn.className = 'quality-btn';
+                    qualityBtn.href = format.url;
+                    qualityBtn.target = '_blank';
+                    qualityBtn.download = `${data.title}.${this.currentFormat}`;
+                    
+                    if (this.currentFormat === 'mp4') {
+                        qualityBtn.innerHTML = `
+                            <div><i class="fas fa-video"></i> ${format.quality}</div>
+                            <div style="font-size: 0.9em; opacity: 0.8; margin-top: 0.5rem;">
+                                <i class="fas fa-download"></i> ${format.size} • ${format.mimeType.split(';')[0]}
+                            </div>
+                        `;
+                    } else {
+                        qualityBtn.innerHTML = `
+                            <div><i class="fas fa-music"></i> ${format.bitrate}kbps</div>
+                            <div style="font-size: 0.9em; opacity: 0.8; margin-top: 0.5rem;">
+                                <i class="fas fa-download"></i> ${format.size} • ${format.mimeType.split(';')[0]}
+                            </div>
+                        `;
+                    }
+                    
+                    qualityOptions.appendChild(qualityBtn);
+                });
+
+                resultCard.style.display = 'block';
+            }
+
+            showLoader() {
+                const loader = document.getElementById('loader');
+                const downloadBtn = document.getElementById('downloadBtn');
+                
+                loader.style.display = 'flex';
+                downloadBtn.disabled = true;
+                downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            }
+
+            hideLoader() {
+                const loader = document.getElementById('loader');
+                const downloadBtn = document.getElementById('downloadBtn');
+                
+                loader.style.display = 'none';
+                downloadBtn.disabled = false;
+                downloadBtn.innerHTML = '<i class="fas fa-rocket"></i> Get Download Links';
+            }
+
+            showError(message) {
+                const errorElement = document.getElementById('errorMessage');
+                errorElement.textContent = message;
+                errorElement.style.display = 'block';
+            }
+
+            hideError() {
+                const errorElement = document.getElementById('errorMessage');
+                errorElement.style.display = 'none';
+            }
+
+            hideResult() {
+                const resultCard = document.getElementById('resultCard');
+                resultCard.style.display = 'none';
+            }
+
+            escapeHtml(text) {
+                const div = document.createElement('div');
+                div.textContent = text;
+                return div.innerHTML;
+            }
+        }
+
+        // Initialize the app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            new YTDownloader();
+        });
+
+        // Add some interactive effects
+        document.addEventListener('mousemove', (e) => {
+            const shapes = document.querySelectorAll('.shape');
+            const x = e.clientX / window.innerWidth;
+            const y = e.clientY / window.innerHeight;
+            
+            shapes.forEach((shape, index) => {
+                const speed = (index + 1) * 0.02;
+                shape.style.transform = `translate(${x * 20 * speed}px, ${y * 20 * speed}px)`;
+            });
+        });
+    </script>
+</body>
+</html>

@@ -29,7 +29,18 @@
         }
 
         .palestine-banner {
-            background: linear-gradient(135deg, #000 0%, #ff0000 30%, #ffffff 50%, #00ff00 70%, #000 100%);
+            background: linear-gradient(90deg, 
+                #000 0%, 
+                #154221 20%, 
+                #fff 35%, 
+                #fff 40%, 
+                #000 45%,
+                #ff0000 55%, 
+                #ff0000 60%, 
+                #000 65%,
+                #154221 80%, 
+                #fff 90%, 
+                #000 100%);
             padding: 0.8rem 2rem;
             text-align: center;
             font-weight: 700;
@@ -39,7 +50,6 @@
             position: relative;
             overflow: hidden;
             border-bottom: 3px solid rgba(255,255,255,0.3);
-            animation: bannerPulse 3s ease-in-out infinite;
         }
 
         .palestine-banner::before {
@@ -50,12 +60,7 @@
             width: 100%;
             height: 100%;
             background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
-            animation: bannerShine 4s ease-in-out infinite;
-        }
-
-        @keyframes bannerPulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.02); }
+            animation: bannerShine 3s linear infinite;
         }
 
         @keyframes bannerShine {
@@ -69,6 +74,8 @@
             justify-content: center;
             gap: 1rem;
             flex-wrap: wrap;
+            position: relative;
+            z-index: 1;
         }
 
         .flag-img {
@@ -93,22 +100,7 @@
         .donate-btn:hover {
             background: rgba(255,255,255,0.3);
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #f5576c);
-            background-size: 400% 400%;
-            animation: gradientShift 15s ease infinite;
-        }
-
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
         }
 
         .floating-shapes {
@@ -516,7 +508,6 @@
         </div>
     </div>
 
-    <div class="animated-bg"></div>
     <div class="floating-shapes">
         <div class="shape"></div>
         <div class="shape"></div>

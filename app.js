@@ -1,13 +1,19 @@
 const express = require('express');
 const cors = require('cors');
 const ytdlp = require('yt-dlp-exec');
+const path = require('path');
 const app = express();
 const PORT = 3000;
 
-const VALID_API_KEY = '123'; // Secure your API key
+// ✅ Path to cookies.txt
+const cookieFilePath = path.join(__dirname, 'cookies.txt');
+
+// ✅ Secure your API key
+const VALID_API_KEY = '123';
+
 app.use(cors());
 
-// API key middleware
+// ✅ API key middleware
 const validateApiKey = (req, res, next) => {
   if (req.query.apiKey !== VALID_API_KEY) {
     return res.status(403).json({ error: 'Invalid API Key' });
@@ -15,7 +21,7 @@ const validateApiKey = (req, res, next) => {
   next();
 };
 
-// Async handler
+// ✅ Async handler
 const asyncHandler = (fn) => (req, res, next) =>
   Promise.resolve(fn(req, res, next)).catch((error) => {
     console.error('API Error:', error);
@@ -25,7 +31,7 @@ const asyncHandler = (fn) => (req, res, next) =>
     });
   });
 
-// /api/ytmp3 - audio formats
+// ✅ /api/ytmp3 - Get audio formats
 app.get('/api/ytmp3', validateApiKey, asyncHandler(async (req, res) => {
   const { url } = req.query;
   if (!url) return res.status(400).json({ error: 'YouTube URL is required' });
@@ -36,6 +42,7 @@ app.get('/api/ytmp3', validateApiKey, asyncHandler(async (req, res) => {
     noWarnings: true,
     preferFreeFormats: true,
     youtubeSkipDashManifest: true,
+    cookies: cookieFilePath, // ✅ Use cookies
   });
 
   const audioFormats = info.formats
@@ -59,7 +66,7 @@ app.get('/api/ytmp3', validateApiKey, asyncHandler(async (req, res) => {
   });
 }));
 
-// /api/ytmp4 - video+audio formats
+// ✅ /api/ytmp4 - Get video+audio formats
 app.get('/api/ytmp4', validateApiKey, asyncHandler(async (req, res) => {
   const { url } = req.query;
   if (!url) return res.status(400).json({ error: 'YouTube URL is required' });
@@ -70,6 +77,7 @@ app.get('/api/ytmp4', validateApiKey, asyncHandler(async (req, res) => {
     noWarnings: true,
     preferFreeFormats: true,
     youtubeSkipDashManifest: true,
+    cookies: cookieFilePath, // ✅ Use cookies
   });
 
   const videoFormats = info.formats
@@ -94,6 +102,7 @@ app.get('/api/ytmp4', validateApiKey, asyncHandler(async (req, res) => {
   });
 }));
 
+// ✅ Start server
 app.listen(PORT, () => {
   console.log(`Server running on http://localhost:${PORT}`);
 });

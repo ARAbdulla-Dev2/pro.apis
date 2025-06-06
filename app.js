@@ -9,9 +9,36 @@ const PORT = 3000;
 const cookieFilePath = path.join(__dirname, 'cookies.txt');
 
 // ✅ Secure your API key
-const VALID_API_KEY = '123';
+const VALID_API_KEY = 'AIzaSyB16u905w4V702Xvq81i0b2J9iX43mR85c';
 
-app.use(cors());
+// ✅ Only allow from this domain
+const ALLOWED_ORIGIN = 'https://yt-dl.arabdullah.top';
+
+// ✅ CORS config: allow only your frontend
+app.use(cors({
+  origin: (origin, callback) => {
+    if (!origin || origin === ALLOWED_ORIGIN) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
+}));
+
+// ✅ Check Origin and Referer headers to avoid scraping
+const checkOriginHeader = (req, res, next) => {
+  const origin = req.headers.origin || '';
+  const referer = req.headers.referer || '';
+
+  if (
+    origin !== ALLOWED_ORIGIN &&
+    !referer.startsWith(ALLOWED_ORIGIN)
+  ) {
+    return res.status(403).json({ error: 'Access denied: Unauthorized origin' });
+  }
+
+  next();
+};
 
 // ✅ API key middleware
 const validateApiKey = (req, res, next) => {
@@ -21,7 +48,7 @@ const validateApiKey = (req, res, next) => {
   next();
 };
 
-// ✅ Async handler
+// ✅ Async error handler
 const asyncHandler = (fn) => (req, res, next) =>
   Promise.resolve(fn(req, res, next)).catch((error) => {
     console.error('API Error:', error);
@@ -32,7 +59,7 @@ const asyncHandler = (fn) => (req, res, next) =>
   });
 
 // ✅ /api/ytmp3 - Get audio formats
-app.get('/api/ytmp3', validateApiKey, asyncHandler(async (req, res) => {
+app.get('/api/ytmp3', validateApiKey, checkOriginHeader, asyncHandler(async (req, res) => {
   const { url } = req.query;
   if (!url) return res.status(400).json({ error: 'YouTube URL is required' });
 
@@ -42,7 +69,7 @@ app.get('/api/ytmp3', validateApiKey, asyncHandler(async (req, res) => {
     noWarnings: true,
     preferFreeFormats: true,
     youtubeSkipDashManifest: true,
-    cookies: cookieFilePath, // ✅ Use cookies
+    cookies: cookieFilePath,
   });
 
   const audioFormats = info.formats
@@ -67,7 +94,7 @@ app.get('/api/ytmp3', validateApiKey, asyncHandler(async (req, res) => {
 }));
 
 // ✅ /api/ytmp4 - Get video+audio formats
-app.get('/api/ytmp4', validateApiKey, asyncHandler(async (req, res) => {
+app.get('/api/ytmp4', validateApiKey, checkOriginHeader, asyncHandler(async (req, res) => {
   const { url } = req.query;
   if (!url) return res.status(400).json({ error: 'YouTube URL is required' });
 
@@ -77,7 +104,7 @@ app.get('/api/ytmp4', validateApiKey, asyncHandler(async (req, res) => {
     noWarnings: true,
     preferFreeFormats: true,
     youtubeSkipDashManifest: true,
-    cookies: cookieFilePath, // ✅ Use cookies
+    cookies: cookieFilePath,
   });
 
   const videoFormats = info.formats

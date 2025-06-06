@@ -1,8 +1,9 @@
 {
   "dependencies": {
-    "@distube/ytdl-core": "^4.16.11",
+    "@distube/yt-dlp": "^2.0.1",
     "cors": "^2.8.5",
     "express": "^5.1.0",
-    "https-proxy-agent": "^7.0.6"
+    "https-proxy-agent": "^7.0.6",
+    "yt-dlp-exec": "^1.0.2"
   }
 }

@@ -514,250 +514,254 @@
         <div class="shape"></div>
     </div>
 
-    <div class="container">
-        <div class="header">
-            <h1 class="logo">YT-DL</h1>
-            <p class="subtitle">Modern YouTube Video & Audio Downloader</p>
-            <p class="developer">Developed by <a href="https://arabdullah.top" target="_blank">ARAbdulla-Dev</a></p>
+<div class="container">
+    <div class="header">
+        <h1 class="logo">YT-DL</h1>
+        <p class="subtitle">Modern YouTube Video & Audio Downloader</p>
+        <p class="developer">Developed by <a href="https://arabdullah.top" target="_blank">ARAbdulla-Dev</a></p>
+    </div>
+
+    <div class="main-card">
+        <div class="input-group">
+            <label class="input-label" for="urlInput">
+                <i class="fab fa-youtube"></i> YouTube Video URL
+            </label>
+            <input 
+                type="url" 
+                id="urlInput" 
+                class="url-input" 
+                placeholder="https://www.youtube.com/watch?v=..."
+                autocomplete="off"
+            >
         </div>
 
-        <div class="main-card">
-            <div class="input-group">
-                <label class="input-label" for="urlInput">
-                    <i class="fab fa-youtube"></i> YouTube Video URL
-                </label>
-                <input 
-                    type="url" 
-                    id="urlInput" 
-                    class="url-input" 
-                    placeholder="https://www.youtube.com/watch?v=..."
-                    autocomplete="off"
-                >
-            </div>
-
-            <div class="format-selector">
-                <button class="format-btn active" data-format="mp4">
-                    <i class="fas fa-video"></i> Video (MP4)
-                </button>
-                <button class="format-btn" data-format="mp3">
-                    <i class="fas fa-music"></i> Audio (MP3)
-                </button>
-            </div>
-
-            <button class="download-btn" id="downloadBtn">
-                <i class="fas fa-rocket"></i> Get Download Links
+        <div class="format-selector">
+            <button class="format-btn active" data-format="mp4">
+                <i class="fas fa-video"></i> Video (MP4)
             </button>
-
-            <div class="loader" id="loader">
-                <div class="spinner"></div>
-            </div>
-
-            <div class="error-message" id="errorMessage"></div>
-
-            <div class="result-card" id="resultCard">
-                <div class="video-info" id="videoInfo"></div>
-                <div class="quality-options" id="qualityOptions"></div>
-            </div>
+            <button class="format-btn" data-format="mp3">
+                <i class="fas fa-music"></i> Audio (MP3)
+            </button>
         </div>
 
-        <div class="footer">
-            <p><i class="fas fa-bolt"></i> Fast, secure, and reliable YouTube downloads • <i class="fas fa-shield-alt"></i> No registration required</p>
+        <button class="download-btn" id="downloadBtn">
+            <i class="fas fa-rocket"></i> Get Download Links
+        </button>
+
+        <div class="loader" id="loader">
+            <div class="spinner"></div>
+        </div>
+
+        <div class="error-message" id="errorMessage"></div>
+
+        <div class="result-card" id="resultCard">
+            <div class="video-info" id="videoInfo"></div>
+            <div class="quality-options" id="qualityOptions"></div>
         </div>
     </div>
 
-    <script>
-        class YTDownloader {
-            constructor() {
-                this.currentFormat = 'mp4';
-                this.apiKey = '123';
-                this.baseUrl = 'http://140.245.249.4:3000/api';
-                this.init();
-            }
+    <div class="footer">
+        <p><i class="fas fa-bolt"></i> Fast, secure, and reliable YouTube downloads • <i class="fas fa-shield-alt"></i> No registration required</p>
+    </div>
+</div>
 
-            init() {
-                this.setupEventListeners();
-                this.setupFormatSelector();
-            }
+<script>
+    class YTDownloader {
+        constructor() {
+            this.currentFormat = 'mp4';
+            this.apiKey = '123';
+            this.baseUrl = 'http://140.245.249.4:3000/api';
+            this.init();
+        }
 
-            setupEventListeners() {
-                const downloadBtn = document.getElementById('downloadBtn');
-                const urlInput = document.getElementById('urlInput');
+        init() {
+            this.setupEventListeners();
+            this.setupFormatSelector();
+        }
 
-                downloadBtn.addEventListener('click', () => this.handleDownload());
-                
-                urlInput.addEventListener('keypress', (e) => {
-                    if (e.key === 'Enter') {
-                        this.handleDownload();
-                    }
-                });
+        setupEventListeners() {
+            const downloadBtn = document.getElementById('downloadBtn');
+            const urlInput = document.getElementById('urlInput');
 
-                urlInput.addEventListener('input', () => {
-                    this.hideError();
-                    this.hideResult();
-                });
-            }
-
-            setupFormatSelector() {
-                const formatBtns = document.querySelectorAll('.format-btn');
-                
-                formatBtns.forEach(btn => {
-                    btn.addEventListener('click', () => {
-                        formatBtns.forEach(b => b.classList.remove('active'));
-                        btn.classList.add('active');
-                        this.currentFormat = btn.dataset.format;
-                        this.hideResult();
-                    });
-                });
-            }
-
-            async handleDownload() {
-                const url = document.getElementById('urlInput').value.trim();
-                
-                if (!url) {
-                    this.showError('Please enter a YouTube URL');
-                    return;
+            downloadBtn.addEventListener('click', () => this.handleDownload());
+            
+            urlInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    this.handleDownload();
                 }
+            });
 
-                if (!this.isValidYouTubeUrl(url)) {
-                    this.showError('Please enter a valid YouTube URL');
-                    return;
-                }
-
-                this.showLoader();
+            urlInput.addEventListener('input', () => {
                 this.hideError();
                 this.hideResult();
+            });
+        }
 
-                try {
-                    const data = await this.fetchVideoData(url);
-                    this.displayResult(data);
-                } catch (error) {
-                    console.error('Download error:', error);
-                    this.showError('Failed to fetch video data. Please try again.');
-                } finally {
-                    this.hideLoader();
-                }
-            }
-
-            isValidYouTubeUrl(url) {
-                const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)[\w-]+/;
-                return youtubeRegex.test(url);
-            }
-
-            async fetchVideoData(url) {
-                const endpoint = this.currentFormat === 'mp4' ? 'ytmp4' : 'ytmp3';
-                const apiUrl = `${this.baseUrl}/${endpoint}?url=${encodeURIComponent(url)}&apiKey=${this.apiKey}`;
-                
-                const response = await fetch(apiUrl);
-                
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                
-                return await response.json();
-            }
-
-            displayResult(data) {
-                const resultCard = document.getElementById('resultCard');
-                const videoInfo = document.getElementById('videoInfo');
-                const qualityOptions = document.getElementById('qualityOptions');
-
-                // Display video info
-                videoInfo.innerHTML = `
-                    <img src="${data.thumbnail}" alt="Thumbnail" class="thumbnail">
-                    <div class="video-details">
-                        <h3>${this.escapeHtml(data.title)}</h3>
-                    </div>
-                `;
-
-                // Display quality options
-                qualityOptions.innerHTML = '';
-                
-                data.formats.forEach(format => {
-                    const qualityBtn = document.createElement('a');
-                    qualityBtn.className = 'quality-btn';
-                    qualityBtn.href = format.url;
-                    qualityBtn.target = '_blank';
-                    qualityBtn.download = `${data.title}.${this.currentFormat}`;
-                    
-                    if (this.currentFormat === 'mp4') {
-                        qualityBtn.innerHTML = `
-                            <div><i class="fas fa-video"></i> ${format.quality}</div>
-                            <div style="font-size: 0.9em; opacity: 0.8; margin-top: 0.5rem;">
-                                <i class="fas fa-download"></i> ${format.size} • ${format.mimeType.split(';')[0]}
-                            </div>
-                        `;
-                    } else {
-                        qualityBtn.innerHTML = `
-                            <div><i class="fas fa-music"></i> ${format.bitrate}kbps</div>
-                            <div style="font-size: 0.9em; opacity: 0.8; margin-top: 0.5rem;">
-                                <i class="fas fa-download"></i> ${format.size} • ${format.mimeType.split(';')[0]}
-                            </div>
-                        `;
-                    }
-                    
-                    qualityOptions.appendChild(qualityBtn);
+        setupFormatSelector() {
+            const formatBtns = document.querySelectorAll('.format-btn');
+            
+            formatBtns.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    formatBtns.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    this.currentFormat = btn.dataset.format;
+                    this.hideResult();
                 });
+            });
+        }
 
-                resultCard.style.display = 'block';
+        async handleDownload() {
+            const url = document.getElementById('urlInput').value.trim();
+            
+            if (!url) {
+                this.showError('Please enter a YouTube URL');
+                return;
             }
 
-            showLoader() {
-                const loader = document.getElementById('loader');
-                const downloadBtn = document.getElementById('downloadBtn');
-                
-                loader.style.display = 'flex';
-                downloadBtn.disabled = true;
-                downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+            if (!this.isValidYouTubeUrl(url)) {
+                this.showError('Please enter a valid YouTube URL');
+                return;
             }
 
-            hideLoader() {
-                const loader = document.getElementById('loader');
-                const downloadBtn = document.getElementById('downloadBtn');
-                
-                loader.style.display = 'none';
-                downloadBtn.disabled = false;
-                downloadBtn.innerHTML = '<i class="fas fa-rocket"></i> Get Download Links';
-            }
+            this.showLoader();
+            this.hideError();
+            this.hideResult();
 
-            showError(message) {
-                const errorElement = document.getElementById('errorMessage');
-                errorElement.textContent = message;
-                errorElement.style.display = 'block';
-            }
-
-            hideError() {
-                const errorElement = document.getElementById('errorMessage');
-                errorElement.style.display = 'none';
-            }
-
-            hideResult() {
-                const resultCard = document.getElementById('resultCard');
-                resultCard.style.display = 'none';
-            }
-
-            escapeHtml(text) {
-                const div = document.createElement('div');
-                div.textContent = text;
-                return div.innerHTML;
+            try {
+                const data = await this.fetchVideoData(url);
+                this.displayResult(data);
+            } catch (error) {
+                console.error('Download error:', error);
+                this.showError('Failed to fetch video data. Please try again.');
+            } finally {
+                this.hideLoader();
             }
         }
 
-        // Initialize the app when DOM is loaded
-        document.addEventListener('DOMContentLoaded', () => {
-            new YTDownloader();
-        });
+        isValidYouTubeUrl(url) {
+            const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)[\w-]+/;
+            return youtubeRegex.test(url);
+        }
 
-        // Add some interactive effects
-        document.addEventListener('mousemove', (e) => {
-            const shapes = document.querySelectorAll('.shape');
-            const x = e.clientX / window.innerWidth;
-            const y = e.clientY / window.innerHeight;
+        async fetchVideoData(url) {
+            const endpoint = this.currentFormat === 'mp4' ? 'ytmp4' : 'ytmp3';
+            const apiUrl = `${this.baseUrl}/${endpoint}?url=${encodeURIComponent(url)}&apiKey=${this.apiKey}`;
             
-            shapes.forEach((shape, index) => {
-                const speed = (index + 1) * 0.02;
-                shape.style.transform = `translate(${x * 20 * speed}px, ${y * 20 * speed}px)`;
+            const response = await fetch(apiUrl);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            return await response.json();
+        }
+
+        displayResult(data) {
+            const resultCard = document.getElementById('resultCard');
+            const videoInfo = document.getElementById('videoInfo');
+            const qualityOptions = document.getElementById('qualityOptions');
+
+            // Display video info
+            videoInfo.innerHTML = `
+                <img src="${data.thumbnail}" alt="Thumbnail" class="thumbnail">
+                <div class="video-details">
+                    <h3>${this.escapeHtml(data.title)}</h3>
+                    <p class="duration">Duration: ${data.duration}</p>
+                </div>
+            `;
+
+            // Display quality options
+            qualityOptions.innerHTML = '';
+            
+            // Use availableFormats instead of formats
+            const formats = data.availableFormats || [];
+            
+            formats.forEach(format => {
+                const qualityBtn = document.createElement('a');
+                qualityBtn.className = 'quality-btn';
+                qualityBtn.href = format.url;
+                qualityBtn.target = '_blank';
+                qualityBtn.download = `${data.title}.${this.currentFormat}`;
+                
+                if (this.currentFormat === 'mp4') {
+                    qualityBtn.innerHTML = `
+                        <div><i class="fas fa-video"></i> ${format.resolution || format.format}</div>
+                        <div style="font-size: 0.9em; opacity: 0.8; margin-top: 0.5rem;">
+                            <i class="fas fa-download"></i> ${format.size || 'Unknown'} • ${format.mimeType.split(';')[0]}
+                        </div>
+                    `;
+                } else {
+                    qualityBtn.innerHTML = `
+                        <div><i class="fas fa-music"></i> ${format.bitrate || 'Unknown'}kbps</div>
+                        <div style="font-size: 0.9em; opacity: 0.8; margin-top: 0.5rem;">
+                            <i class="fas fa-download"></i> ${format.size || 'Unknown'} • ${format.mimeType.split(';')[0]}
+                        </div>
+                    `;
+                }
+                
+                qualityOptions.appendChild(qualityBtn);
             });
+
+            resultCard.style.display = 'block';
+        }
+
+        showLoader() {
+            const loader = document.getElementById('loader');
+            const downloadBtn = document.getElementById('downloadBtn');
+            
+            loader.style.display = 'flex';
+            downloadBtn.disabled = true;
+            downloadBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+        }
+
+        hideLoader() {
+            const loader = document.getElementById('loader');
+            const downloadBtn = document.getElementById('downloadBtn');
+            
+            loader.style.display = 'none';
+            downloadBtn.disabled = false;
+            downloadBtn.innerHTML = '<i class="fas fa-rocket"></i> Get Download Links';
+        }
+
+        showError(message) {
+            const errorElement = document.getElementById('errorMessage');
+            errorElement.textContent = message;
+            errorElement.style.display = 'block';
+        }
+
+        hideError() {
+            const errorElement = document.getElementById('errorMessage');
+            errorElement.style.display = 'none';
+        }
+
+        hideResult() {
+            const resultCard = document.getElementById('resultCard');
+            resultCard.style.display = 'none';
+        }
+
+        escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+    }
+
+    // Initialize the app when DOM is loaded
+    document.addEventListener('DOMContentLoaded', () => {
+        new YTDownloader();
+    });
+
+    // Add some interactive effects
+    document.addEventListener('mousemove', (e) => {
+        const shapes = document.querySelectorAll('.shape');
+        const x = e.clientX / window.innerWidth;
+        const y = e.clientY / window.innerHeight;
+        
+        shapes.forEach((shape, index) => {
+            const speed = (index + 1) * 0.02;
+            shape.style.transform = `translate(${x * 20 * speed}px, ${y * 20 * speed}px)`;
         });
-    </script>
+    });
+</script>
 </body>
 </html>

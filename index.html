@@ -65,41 +65,57 @@
             height: 40px;
         }
 
-        /* Palestine Donation Banner */
-        .palestine-banner {
-            background: linear-gradient(90deg, #15402E 0%, #15402E 33%, #FFFFFF 33%, #FFFFFF 66%, #CE1126 66%, #CE1126 100%);
-            color: rgb(0, 0, 0);
-            padding: 0.75rem;
-            text-align: center;
-            margin: 0.5rem 0;
-            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            cursor: pointer;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            position: relative;
-            overflow: hidden;
-            border-radius: 6px;
-        }
+  /* Palestine Donation Banner */
+.palestine-banner {
+    background: linear-gradient(90deg, #15402E 0%, #15402E 33%, #FFFFFF 33%, #FFFFFF 66%, #CE1126 66%, #CE1126 100%);
+    color: white;
+    padding: 0.75rem;
+    text-align: center;
+    margin: 0.5rem 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    position: relative;
+    overflow: hidden;
+    border-radius: 6px;
+}
 
-        .palestine-banner h2 {
-            margin-bottom: 0.5rem;
-            font-size: 1.1rem;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.3);
-        }
+.palestine-banner .banner-content {
+    display: inline-block;
+    padding: 0.75rem 1.25rem;
+    background-color: rgba(0, 0, 0, 0.5);
+    border-radius: 6px;
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+    transition: all 0.3s ease;
+}
 
-        .palestine-banner p {
-            font-size: 0.85rem;
-            margin-bottom: 0.5rem;
-            text-shadow: 1px 1px 1px rgba(0,0,0,0.2);
-        }
+.palestine-banner:hover .banner-content {
+    background-color: rgba(0, 0, 0, 0.6);
+}
 
-        .donate-options {
-            display: none;
-            background: white;
-            border-radius: 6px;
-            padding: 0.75rem;
-            margin-top: 0.5rem;
-            animation: slideDown 0.3s ease-out forwards;
-        }
+.palestine-banner h2 {
+    margin-bottom: 0.5rem;
+    font-size: 1.1rem;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.8);
+}
+
+.palestine-banner p {
+    font-size: 0.85rem;
+    margin-bottom: 0;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.7);
+}
+
+.donate-options {
+    display: none;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 6px;
+    padding: 0.75rem;
+    margin-top: 0.75rem;
+    animation: slideDown 0.3s ease-out forwards;
+    backdrop-filter: blur(2px);
+    -webkit-backdrop-filter: blur(2px);
+}
 
         @keyframes slideDown {
             from { opacity: 0; transform: translateY(-10px); }
@@ -134,8 +150,8 @@
 
         /* Ad Placeholder */
         .ad-placeholder {
-            width: 600px;
-            height: 400px;
+            width: 728px;
+            height: 90px;
             margin: 1rem auto;
             background-color: #e2e8f0;
             border: 1px dashed #94a3b8;
@@ -502,8 +518,10 @@
     <div class="container">
         <!-- Palestine Donation Banner -->
         <div class="palestine-banner" id="palestineBanner">
-            <h2><i class="fas fa-hands-helping"></i> Support Palestine</h2>
-            <p>Help provide humanitarian aid to those in need</p>
+             <div class="banner-content">
+        <h2><i class="fas fa-hands-helping"></i> Support Palestine</h2>
+        <p>Help provide humanitarian aid to those in need</p>
+    </div>
             <div class="donate-options" id="donateOptions">
                 <a href="https://donate.unrwa.org/int/en/general" class="donate-option unrwa" target="_blank">
                     <i class="fas fa-globe"></i> Donate via UNRWA
@@ -520,7 +538,7 @@
             
             <!-- Ad Placeholder -->
             <div class="ad-placeholder" id="adPlaceholder">
-                <img src="./img/dummy_600x400_ffffff_cccccc_advertise-here.png" alt="Advertise Here" />
+                <img src="./img/dummy_728x90_ffffff_cccccc_advertise-here.png" alt="Advertise Here" />
             </div>
 
             <div class="card">
@@ -576,7 +594,7 @@
 
             <!-- Second Ad Placeholder -->
             <div class="ad-placeholder" id="adPlaceholder2">
-                                <img src="./img/dummy_600x400_ffffff_cccccc_advertise-here.png" alt="Advertise Here" />
+                                <img src="./img/dummy_728x90_ffffff_cccccc_advertise-here.png" alt="Advertise Here" />
             </div>
         </div>
     </main>

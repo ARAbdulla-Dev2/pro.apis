@@ -13,7 +13,7 @@ const COOKIES_PATH = path.join(__dirname, 'cookies.txt');
 const ORIGINS_PATH = path.join(__dirname, 'allowOrigins.json');
 
 // ✅ Global CORS allow list (updated dynamically)
-let allowList = ['http://localhost:3000', 'https://api.arabdullah.top'];
+let allowList = ['http://localhost:3334', 'https://api.arabdullah.top', 'https://cdn.evelocore.com', 'https://dhero.evelocore.com'];
 
 // ✅ Load origins from file at startup
 async function loadAllowOrigins() {
@@ -72,6 +72,15 @@ app.get('/api/ytmp4', validateApiKey, asyncHandler(async (req, res) => {
   if (!url) return res.status(400).json({ error: 'YouTube URL is required' });
 
   const result = await getVideoInfoWithFormats(url);
+  res.json(result);
+}));
+
+// ✅ /api/fb - Get Facebook video info
+app.get('/api/fb', validateApiKey, asyncHandler(async (req, res) => {
+  const { url } = req.query;
+  if (!url) return res.status(400).json({ error: 'Facebook URL is required' });
+  
+  const result = await handleFbRequest(url);
   res.json(result);
 }));
 

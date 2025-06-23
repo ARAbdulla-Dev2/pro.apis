@@ -1,12 +1,22 @@
 // modules/ig.js
-const insta = require("priyansh-ig-downloader");
+const { igdl } = require('btch-downloader');
 
 async function getInstagramMedia(url) {
   try {
-    const result = await insta(url);
+    const data = await igdl(url);
+    
+    // Format the response to match your frontend structure
+    const formattedData = data.map(item => ({
+      developer: '@prm2.0',
+      thumbnail: item.thumbnail || '',
+      url: item.url,
+      resolution: item.resolution || undefined,
+      shouldRender: undefined
+    }));
+
     return {
       success: true,
-      data: result
+      data: formattedData
     };
   } catch (error) {
     console.error("Error fetching Instagram data:", error);

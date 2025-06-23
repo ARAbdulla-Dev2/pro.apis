@@ -5,6 +5,7 @@ const path = require('path');
 const { getAudioInfo, getVideoInfoWithFormats } = require('./modules/yt');
 const { handleFbRequest } = require('./modules/fb');
 const { getInstagramMedia } = require('./modules/ig');
+const { getTikTokMedia } = require('./modules/tk');
 
 const app = express();
 const PORT = 3334;
@@ -91,7 +92,29 @@ app.get('/api/ig', validateApiKey, asyncHandler(async (req, res) => {
   const { url } = req.query;
   if (!url) return res.status(400).json({ error: 'Instagram URL is required' });
 
+  // Validate Instagram URL format
+  if (!url.match(/https?:\/\/(www\.)?instagram\.com\/(p|reel|tv)\/[a-zA-Z0-9_-]+/)) {
+    return res.status(400).json({ error: 'Invalid Instagram URL format' });
+  }
+
   const result = await getInstagramMedia(url);
+  if (!result.success) {
+    return res.status(500).json({ error: result.error });
+  }
+  res.json(result.data);
+}));
+
+// ✅ /api/tk - Get TikTok video info
+app.get('/api/tk', validateApiKey, asyncHandler(async (req, res) => {
+  const { url } = req.query;
+  if (!url) return res.status(400).json({ error: 'TikTok URL is required' });
+
+  // Validate TikTok URL format
+  if (!url.match(/https?:\/\/(www\.)?tiktok\.com\/@.+\/video\/\d+/)) {
+    return res.status(400).json({ error: 'Invalid TikTok URL format' });
+  }
+
+  const result = await getTikTokMedia(url);
   if (!result.success) {
     return res.status(500).json({ error: result.error });
   }

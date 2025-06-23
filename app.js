@@ -4,6 +4,7 @@ const fs = require('fs').promises;
 const path = require('path');
 const { getAudioInfo, getVideoInfoWithFormats } = require('./modules/yt');
 const { handleFbRequest } = require('./modules/fb');
+const { getInstagramMedia } = require('./modules/ig');
 
 const app = express();
 const PORT = 3334;
@@ -83,6 +84,18 @@ app.get('/api/fb', validateApiKey, asyncHandler(async (req, res) => {
   
   const result = await handleFbRequest(url);
   res.json(result);
+}));
+
+// ✅ /api/ig - Get Instagram video info
+app.get('/api/ig', validateApiKey, asyncHandler(async (req, res) => {
+  const { url } = req.query;
+  if (!url) return res.status(400).json({ error: 'Instagram URL is required' });
+
+  const result = await getInstagramMedia(url);
+  if (!result.success) {
+    return res.status(500).json({ error: result.error });
+  }
+  res.json(result.data);
 }));
 
 // ✅ App data config (cookies + allowed origins)

@@ -1,44 +1,52 @@
 const express = require('express');
 const cors = require('cors');
 const ytdlp = require('yt-dlp-exec');
+const fs = require('fs');
 const path = require('path');
+const fetch = require('node-fetch');
 const app = express();
-const PORT = 3000;
-
-// ✅ Path to cookies.txt
-const cookieFilePath = path.join(__dirname, 'cookies.txt');
+const PORT = 3334;
 
 // ✅ Secure your API key
 const VALID_API_KEY = 'AIzaSyB16u905w4V702Xvq81i0b2J9iX43mR85c';
 
-// ✅ Only allow from this domain
-const ALLOWED_ORIGIN = 'https://yt-dl.arabdullah.top';
+// ✅ Allow all origins
+app.use(cors());
 
-// ✅ CORS config: allow only your frontend
-app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || origin === ALLOWED_ORIGIN) {
-      callback(null, true);
-    } else {
-      callback(new Error('Not allowed by CORS'));
+// Helper function to fetch fresh cookies
+async function getFreshCookies() {
+  try {
+    const response = await fetch('https://cdn.evelocore.com/files/users/arabdullah/api/youtube/cookies.txt');
+    if (!response.ok) {
+      throw new Error(`HTTP error! Status: ${response.status}`);
+    }
+    return await response.text();
+  } catch (err) {
+    console.error('Failed to fetch cookies:', err);
+    return ''; // Return empty string if cookies can't be fetched
+  }
+}
+
+// Helper function to create and manage temporary cookies file
+async function withTempCookies(cookiesData, callback) {
+  const tempFilePath = path.join(__dirname, `cookies_${Date.now()}.txt`);
+  
+  try {
+    // Write cookies to temp file
+    await fs.promises.writeFile(tempFilePath, cookiesData);
+    
+    // Execute callback with temp file path
+    const result = await callback(tempFilePath);
+    return result;
+  } finally {
+    // Delete temp file whether successful or not
+    try {
+      await fs.promises.unlink(tempFilePath);
+    } catch (err) {
+      console.error('Error deleting temp cookies file:', err);
     }
   }
-}));
-
-// ✅ Check Origin and Referer headers to avoid scraping
-const checkOriginHeader = (req, res, next) => {
-  const origin = req.headers.origin || '';
-  const referer = req.headers.referer || '';
-
-  if (
-    origin !== ALLOWED_ORIGIN &&
-    !referer.startsWith(ALLOWED_ORIGIN)
-  ) {
-    return res.status(403).json({ error: 'Access denied: Unauthorized origin' });
-  }
-
-  next();
-};
+}
 
 // ✅ API key middleware
 const validateApiKey = (req, res, next) => {
@@ -59,17 +67,22 @@ const asyncHandler = (fn) => (req, res, next) =>
   });
 
 // ✅ /api/ytmp3 - Get audio formats
-app.get('/api/ytmp3', validateApiKey, checkOriginHeader, asyncHandler(async (req, res) => {
+app.get('/api/ytmp3', validateApiKey, asyncHandler(async (req, res) => {
   const { url } = req.query;
   if (!url) return res.status(400).json({ error: 'YouTube URL is required' });
 
-  const info = await ytdlp(url, {
-    dumpSingleJson: true,
-    noCheckCertificates: true,
-    noWarnings: true,
-    preferFreeFormats: true,
-    youtubeSkipDashManifest: true,
-    cookies: cookieFilePath,
+  // Get fresh cookies for each request
+  const freshCookies = await getFreshCookies();
+
+  const info = await withTempCookies(freshCookies, async (cookiePath) => {
+    return await ytdlp(url, {
+      dumpSingleJson: true,
+      noCheckCertificates: true,
+      noWarnings: true,
+      preferFreeFormats: true,
+      youtubeSkipDashManifest: true,
+      cookies: cookiePath,
+    });
   });
 
   const audioFormats = info.formats
@@ -94,17 +107,22 @@ app.get('/api/ytmp3', validateApiKey, checkOriginHeader, asyncHandler(async (req
 }));
 
 // ✅ /api/ytmp4 - Get video+audio formats
-app.get('/api/ytmp4', validateApiKey, checkOriginHeader, asyncHandler(async (req, res) => {
+app.get('/api/ytmp4', validateApiKey, asyncHandler(async (req, res) => {
   const { url } = req.query;
   if (!url) return res.status(400).json({ error: 'YouTube URL is required' });
 
-  const info = await ytdlp(url, {
-    dumpSingleJson: true,
-    noCheckCertificates: true,
-    noWarnings: true,
-    preferFreeFormats: true,
-    youtubeSkipDashManifest: true,
-    cookies: cookieFilePath,
+  // Get fresh cookies for each request
+  const freshCookies = await getFreshCookies();
+
+  const info = await withTempCookies(freshCookies, async (cookiePath) => {
+    return await ytdlp(url, {
+      dumpSingleJson: true,
+      noCheckCertificates: true,
+      noWarnings: true,
+      preferFreeFormats: true,
+      youtubeSkipDashManifest: true,
+      cookies: cookiePath,
+    });
   });
 
   const videoFormats = info.formats

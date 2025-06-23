@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ARAbdulla-Dev API Services</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        }
+        .endpoint-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+        }
+        .copy-btn {
+            transition: all 0.2s ease;
+        }
+        .copy-btn:hover {
+            background-color: #4f46e5;
+        }
+        .copy-btn.copied {
+            background-color: #10b981;
+        }
+    </style>
+</head>
+<body class="gradient-bg min-h-screen font-sans antialiased">
+    <div class="container mx-auto px-4 py-12">
+        <!-- Header -->
+        <header class="text-center mb-16">
+            <div class="flex justify-center mb-6">
+                <div class="w-24 h-24 rounded-full bg-white shadow-lg flex items-center justify-center">
+                    <i class="fas fa-code text-4xl text-indigo-600"></i>
+                </div>
+            </div>
+            <h1 class="text-4xl md:text-5xl font-bold text-gray-800 mb-4">ARAbdulla-Dev API</h1>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                Powerful media extraction API services for YouTube, Facebook, Instagram, and TikTok
+            </p>
+        </header>
+
+        <!-- API Endpoints -->
+        <section class="mb-16">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-8 text-center">Available Endpoints</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- YouTube MP3 -->
+                <div class="endpoint-card bg-white rounded-xl shadow-md p-6 transition-all duration-300">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-red-100 p-3 rounded-lg mr-4">
+                            <i class="fab fa-youtube text-red-600 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800">YouTube Audio</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4">Extract audio streams from YouTube videos in various formats.</p>
+                    <div class="bg-gray-50 rounded-lg p-3 flex items-center justify-between">
+                        <code class="text-sm text-gray-800 overflow-x-auto">GET /api/ytmp3?url={youtube_url}&apiKey=YOUR_KEY</code>
+                        <button class="copy-btn bg-indigo-500 text-white px-3 py-1 rounded text-sm ml-2">
+                            <i class="far fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- YouTube MP4 -->
+                <div class="endpoint-card bg-white rounded-xl shadow-md p-6 transition-all duration-300">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-red-100 p-3 rounded-lg mr-4">
+                            <i class="fab fa-youtube text-red-600 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800">YouTube Video</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4">Get video+audio streams from YouTube with multiple quality options.</p>
+                    <div class="bg-gray-50 rounded-lg p-3 flex items-center justify-between">
+                        <code class="text-sm text-gray-800 overflow-x-auto">GET /api/ytmp4?url={youtube_url}&apiKey=YOUR_KEY</code>
+                        <button class="copy-btn bg-indigo-500 text-white px-3 py-1 rounded text-sm ml-2">
+                            <i class="far fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Facebook -->
+                <div class="endpoint-card bg-white rounded-xl shadow-md p-6 transition-all duration-300">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-blue-100 p-3 rounded-lg mr-4">
+                            <i class="fab fa-facebook text-blue-600 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800">Facebook Video</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4">Extract video content from Facebook posts and reels.</p>
+                    <div class="bg-gray-50 rounded-lg p-3 flex items-center justify-between">
+                        <code class="text-sm text-gray-800 overflow-x-auto">GET /api/fb?url={facebook_url}&apiKey=YOUR_KEY</code>
+                        <button class="copy-btn bg-indigo-500 text-white px-3 py-1 rounded text-sm ml-2">
+                            <i class="far fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Instagram -->
+                <div class="endpoint-card bg-white rounded-xl shadow-md p-6 transition-all duration-300">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-pink-100 p-3 rounded-lg mr-4">
+                            <i class="fab fa-instagram text-pink-600 text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800">Instagram Media</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4">Download videos and reels from Instagram posts.</p>
+                    <div class="bg-gray-50 rounded-lg p-3 flex items-center justify-between">
+                        <code class="text-sm text-gray-800 overflow-x-auto">GET /api/ig?url={instagram_url}&apiKey=YOUR_KEY</code>
+                        <button class="copy-btn bg-indigo-500 text-white px-3 py-1 rounded text-sm ml-2">
+                            <i class="far fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <!-- TikTok -->
+                <div class="endpoint-card bg-white rounded-xl shadow-md p-6 transition-all duration-300 md:col-span-2">
+                    <div class="flex items-center mb-4">
+                        <div class="bg-black p-3 rounded-lg mr-4">
+                            <i class="fab fa-tiktok text-white text-2xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800">TikTok Video</h3>
+                    </div>
+                    <p class="text-gray-600 mb-4">Extract videos from TikTok with metadata and direct download links.</p>
+                    <div class="bg-gray-50 rounded-lg p-3 flex items-center justify-between">
+                        <code class="text-sm text-gray-800 overflow-x-auto">GET /api/tk?url={tiktok_url}&apiKey=YOUR_KEY</code>
+                        <button class="copy-btn bg-indigo-500 text-white px-3 py-1 rounded text-sm ml-2">
+                            <i class="far fa-copy"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Documentation -->
+        <section class="bg-white rounded-xl shadow-md p-8 mb-16">
+            <h2 class="text-2xl font-semibold text-gray-800 mb-6">API Documentation</h2>
+            
+            <div class="space-y-6">
+                <div>
+                    <h3 class="text-lg font-medium text-gray-800 mb-2">Authentication</h3>
+                    <p class="text-gray-600">All endpoints require an API key passed as a query parameter:</p>
+                    <div class="bg-gray-50 rounded-lg p-3 mt-2">
+                        <code class="text-sm text-gray-800">?apiKey=YOUR_API_KEY</code>
+                    </div>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-medium text-gray-800 mb-2">Response Format</h3>
+                    <p class="text-gray-600 mb-2">Successful responses return JSON data with the following structure:</p>
+                    <pre class="bg-gray-800 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm">
+{
+    "success": true,
+    "data": {
+        "title": "Video Title",
+        "thumbnail": "thumbnail_url",
+        "formats": [
+            {
+                "url": "download_url",
+                "quality": "hd",
+                "type": "video/mp4"
+            }
+        ]
+    }
+}</pre>
+                </div>
+                
+                <div>
+                    <h3 class="text-lg font-medium text-gray-800 mb-2">Error Handling</h3>
+                    <p class="text-gray-600">Errors return appropriate HTTP status codes with JSON responses:</p>
+                    <pre class="bg-gray-800 text-gray-100 p-4 rounded-lg overflow-x-auto text-sm mt-2">
+{
+    "error": "Error message",
+    "details": "Additional error details if available"
+}</pre>
+                </div>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="text-center text-gray-600">
+            <div class="flex justify-center space-x-6 mb-4">
+                <a href="#" class="text-gray-500 hover:text-indigo-600">
+                    <i class="fab fa-github text-xl"></i>
+                </a>
+                <a href="#" class="text-gray-500 hover:text-blue-600">
+                    <i class="fab fa-twitter text-xl"></i>
+                </a>
+                <a href="#" class="text-gray-500 hover:text-orange-600">
+                    <i class="fas fa-envelope text-xl"></i>
+                </a>
+            </div>
+            <p>© 2023 ARAbdulla-Dev. All rights reserved.</p>
+            <p class="text-sm mt-2 text-gray-500">API Version 1.0.0</p>
+        </footer>
+    </div>
+
+    <script>
+        // Copy endpoint functionality
+        document.querySelectorAll('.copy-btn').forEach(button => {
+            button.addEventListener('click', (e) => {
+                const codeBlock = e.target.closest('.bg-gray-50').querySelector('code');
+                const textToCopy = codeBlock.textContent;
+                
+                navigator.clipboard.writeText(textToCopy).then(() => {
+                    button.classList.add('copied');
+                    button.innerHTML = '<i class="fas fa-check"></i>';
+                    
+                    setTimeout(() => {
+                        button.classList.remove('copied');
+                        button.innerHTML = '<i class="far fa-copy"></i>';
+                    }, 2000);
+                });
+            });
+        });
+
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({
+                    behavior: 'smooth'
+                });
+            });
+        });
+    </script>
+</body>
+</html>

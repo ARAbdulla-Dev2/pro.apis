@@ -16,7 +16,7 @@ const COOKIES_PATH = path.join(__dirname, 'cookies.txt');
 const ORIGINS_PATH = path.join(__dirname, 'allowOrigins.json');
 
 // ✅ Global CORS allow list (updated dynamically)
-let allowList = ['http://localhost:3334', 'https://api.arabdullah.top', 'https://cdn.evelocore.com', 'https://dhero.evelocore.com'];
+let allowList = ['http://localhost:3000', 'https://api.arabdullah.top', 'https://cdn.evelocore.com', 'https://dhero.evelocore.com'];
 
 // ✅ Load origins from file at startup
 async function loadAllowOrigins() {
@@ -44,6 +44,7 @@ const corsOptionsDelegate = function (req, callback) {
 // ✅ Middleware
 app.use(cors(corsOptionsDelegate));
 app.use(express.json());
+app.use(express.static(path.join(__dirname, 'public'))); // Serve static files from 'public' directory
 
 // ✅ API key validation
 const validateApiKey = (req, res, next) => {

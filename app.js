@@ -98,11 +98,11 @@ const URL_PATTERNS = {
 };
 
 // Routes
-app.get('/api/ytmp3', validateApiKey, asyncHandler(createEndpointHandler(getAudioInfo, 'YouTube')));
-app.get('/api/ytmp4', validateApiKey, asyncHandler(createEndpointHandler(getVideoInfoWithFormats, 'YouTube')));
-app.get('/api/fb', validateApiKey, asyncHandler(createEndpointHandler(handleFbRequest, 'Facebook')));
-app.get('/api/ig', validateApiKey, asyncHandler(createEndpointHandler(getInstagramMedia, 'Instagram', URL_PATTERNS.INSTAGRAM)));
-app.get('/api/tk', validateApiKey, asyncHandler(createEndpointHandler(getTikTokMedia, 'TikTok', URL_PATTERNS.TIKTOK)));
+app.get('/api/ytmp3', validateApiKey, createEndpointHandler(getAudioInfo, 'YouTube'));
+app.get('/api/ytmp4', validateApiKey, createEndpointHandler(getVideoInfoWithFormats, 'YouTube'));
+app.get('/api/fb', validateApiKey, createEndpointHandler(handleFbRequest, 'Facebook'));
+app.get('/api/ig', validateApiKey, createEndpointHandler(getInstagramMedia, 'Instagram', URL_PATTERNS.INSTAGRAM));
+app.get('/api/tk', validateApiKey, createEndpointHandler(getTikTokMedia, 'TikTok', URL_PATTERNS.TIKTOK));
 
 // ✅ App data config (cookies + allowed origins)
 app.post('/api/update-appdata', asyncHandler(async (req, res) => {

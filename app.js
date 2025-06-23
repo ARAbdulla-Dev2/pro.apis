@@ -3,6 +3,7 @@ const cors = require('cors');
 const fs = require('fs').promises;
 const path = require('path');
 const { getAudioInfo, getVideoInfoWithFormats } = require('./modules/yt');
+const { handleFbRequest } = require('./modules/fb');
 
 const app = express();
 const PORT = 3334;

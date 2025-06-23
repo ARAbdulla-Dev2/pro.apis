@@ -11,6 +11,7 @@ const VALID_API_KEY = 'AIzaSyB16u905w4V702Xvq81i0b2J9iX43mR85c';
 
 // ✅ Allow all origins
 app.use(cors());
+app.use(express.json());
 
 // ✅ API key middleware
 const validateApiKey = (req, res, next) => {

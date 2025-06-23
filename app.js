@@ -60,66 +60,49 @@ const asyncHandler = (fn) => (req, res, next) =>
     res.status(500).json({ error: 'Server error', details: err.message });
   });
 
-// ✅ Get audio formats
-app.get('/api/ytmp3', validateApiKey, asyncHandler(async (req, res) => {
-  const { url } = req.query;
-  if (!url) return res.status(400).json({ error: 'YouTube URL is required' });
+// Generic endpoint handler
+const createEndpointHandler = (serviceFunction, platformName, urlRegex = null) => {
+  return async (req, res) => {
+    const { url } = req.query;
+    if (!url) {
+      return res.status(400).json({ error: `${platformName} URL is required` });
+    }
 
-  const result = await getAudioInfo(url);
-  res.json(result);
-}));
+    if (urlRegex && !url.match(urlRegex)) {
+      return res.status(400).json({ error: `Invalid ${platformName} URL format` });
+    }
 
-// ✅ Get video+audio formats
-app.get('/api/ytmp4', validateApiKey, asyncHandler(async (req, res) => {
-  const { url } = req.query;
-  if (!url) return res.status(400).json({ error: 'YouTube URL is required' });
+    try {
+      const result = await serviceFunction(url);
+      
+      // Handle different response structures
+      if (result && typeof result === 'object' && 'success' in result) {
+        if (!result.success) {
+          return res.status(500).json({ error: result.error });
+        }
+        return res.json(result.data);
+      }
+      
+      return res.json(result);
+    } catch (error) {
+      console.error(`Error processing ${platformName} request:`, error);
+      return res.status(500).json({ error: `Failed to process ${platformName} URL` });
+    }
+  };
+};
 
-  const result = await getVideoInfoWithFormats(url);
-  res.json(result);
-}));
+// Define URL validation patterns
+const URL_PATTERNS = {
+  INSTAGRAM: /https?:\/\/(www\.)?instagram\.com\/(p|reel|tv)\/[a-zA-Z0-9_-]+/,
+  TIKTOK: /https?:\/\/(www\.)?tiktok\.com\/@.+\/video\/\d+/
+};
 
-// ✅ /api/fb - Get Facebook video info
-app.get('/api/fb', validateApiKey, asyncHandler(async (req, res) => {
-  const { url } = req.query;
-  if (!url) return res.status(400).json({ error: 'Facebook URL is required' });
-  
-  const result = await handleFbRequest(url);
-  res.json(result);
-}));
-
-// ✅ /api/ig - Get Instagram video info
-app.get('/api/ig', validateApiKey, asyncHandler(async (req, res) => {
-  const { url } = req.query;
-  if (!url) return res.status(400).json({ error: 'Instagram URL is required' });
-
-  // Validate Instagram URL format
-  if (!url.match(/https?:\/\/(www\.)?instagram\.com\/(p|reel|tv)\/[a-zA-Z0-9_-]+/)) {
-    return res.status(400).json({ error: 'Invalid Instagram URL format' });
-  }
-
-  const result = await getInstagramMedia(url);
-  if (!result.success) {
-    return res.status(500).json({ error: result.error });
-  }
-  res.json(result.data);
-}));
-
-// ✅ /api/tk - Get TikTok video info
-app.get('/api/tk', validateApiKey, asyncHandler(async (req, res) => {
-  const { url } = req.query;
-  if (!url) return res.status(400).json({ error: 'TikTok URL is required' });
-
-  // Validate TikTok URL format
-  if (!url.match(/https?:\/\/(www\.)?tiktok\.com\/@.+\/video\/\d+/)) {
-    return res.status(400).json({ error: 'Invalid TikTok URL format' });
-  }
-
-  const result = await getTikTokMedia(url);
-  if (!result.success) {
-    return res.status(500).json({ error: result.error });
-  }
-  res.json(result.data);
-}));
+// Routes
+app.get('/api/ytmp3', validateApiKey, asyncHandler(createEndpointHandler(getAudioInfo, 'YouTube')));
+app.get('/api/ytmp4', validateApiKey, asyncHandler(createEndpointHandler(getVideoInfoWithFormats, 'YouTube')));
+app.get('/api/fb', validateApiKey, asyncHandler(createEndpointHandler(handleFbRequest, 'Facebook')));
+app.get('/api/ig', validateApiKey, asyncHandler(createEndpointHandler(getInstagramMedia, 'Instagram', URL_PATTERNS.INSTAGRAM)));
+app.get('/api/tk', validateApiKey, asyncHandler(createEndpointHandler(getTikTokMedia, 'TikTok', URL_PATTERNS.TIKTOK)));
 
 // ✅ App data config (cookies + allowed origins)
 app.post('/api/update-appdata', asyncHandler(async (req, res) => {

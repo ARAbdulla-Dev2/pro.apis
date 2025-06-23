@@ -1,10 +1,9 @@
 const express = require('express');
 const cors = require('cors');
-const ytdlp = require('yt-dlp-exec');
-const fs = require('fs');
-const path = require('path');
-const fetch = require('node-fetch');
+const { getAudioInfo, getVideoInfoWithFormats } = require('./modules/yt');
 const app = express();
+const fs = require('fs').promises;
+const path = require('path');
 const PORT = 3334;
 
 // ✅ Secure your API key
@@ -12,41 +11,6 @@ const VALID_API_KEY = 'AIzaSyB16u905w4V702Xvq81i0b2J9iX43mR85c';
 
 // ✅ Allow all origins
 app.use(cors());
-
-// Helper function to fetch fresh cookies
-async function getFreshCookies() {
-  try {
-    const response = await fetch('https://cdn.evelocore.com/files/users/arabdullah/api/youtube/cookies.txt');
-    if (!response.ok) {
-      throw new Error(`HTTP error! Status: ${response.status}`);
-    }
-    return await response.text();
-  } catch (err) {
-    console.error('Failed to fetch cookies:', err);
-    return ''; // Return empty string if cookies can't be fetched
-  }
-}
-
-// Helper function to create and manage temporary cookies file
-async function withTempCookies(cookiesData, callback) {
-  const tempFilePath = path.join(__dirname, `cookies_${Date.now()}.txt`);
-  
-  try {
-    // Write cookies to temp file
-    await fs.promises.writeFile(tempFilePath, cookiesData);
-    
-    // Execute callback with temp file path
-    const result = await callback(tempFilePath);
-    return result;
-  } finally {
-    // Delete temp file whether successful or not
-    try {
-      await fs.promises.unlink(tempFilePath);
-    } catch (err) {
-      console.error('Error deleting temp cookies file:', err);
-    }
-  }
-}
 
 // ✅ API key middleware
 const validateApiKey = (req, res, next) => {
@@ -70,81 +34,63 @@ const asyncHandler = (fn) => (req, res, next) =>
 app.get('/api/ytmp3', validateApiKey, asyncHandler(async (req, res) => {
   const { url } = req.query;
   if (!url) return res.status(400).json({ error: 'YouTube URL is required' });
-
-  // Get fresh cookies for each request
-  const freshCookies = await getFreshCookies();
-
-  const info = await withTempCookies(freshCookies, async (cookiePath) => {
-    return await ytdlp(url, {
-      dumpSingleJson: true,
-      noCheckCertificates: true,
-      noWarnings: true,
-      preferFreeFormats: true,
-      youtubeSkipDashManifest: true,
-      cookies: cookiePath,
-    });
-  });
-
-  const audioFormats = info.formats
-    .filter(f => f.acodec !== 'none' && f.vcodec === 'none')
-    .map(f => ({
-      format: f.format,
-      mimeType: f.ext,
-      url: f.url,
-      size: f.filesize ? `${(f.filesize / (1024 * 1024)).toFixed(2)} MB` : 'Unknown',
-      bitrate: f.abr ? `${f.abr} kbps` : 'Unknown',
-    }));
-
-  if (!audioFormats.length) throw new Error('No audio formats found.');
-
-  res.json({
-    status: true,
-    title: info.title,
-    thumbnail: info.thumbnail,
-    duration: info.duration_string || `${info.duration} sec`,
-    availableFormats: audioFormats,
-  });
+  
+  const result = await getAudioInfo(url);
+  res.json(result);
 }));
 
 // ✅ /api/ytmp4 - Get video+audio formats
 app.get('/api/ytmp4', validateApiKey, asyncHandler(async (req, res) => {
   const { url } = req.query;
   if (!url) return res.status(400).json({ error: 'YouTube URL is required' });
+  
+  const result = await getVideoInfoWithFormats(url);
+  res.json(result);
+}));
 
-  // Get fresh cookies for each request
-  const freshCookies = await getFreshCookies();
+// ✅ /api/ytmp4 - Get video+audio formats
+app.post('/api/update-appdata', (async (req, res) => {
+  const COOKIES_PATH = path.join(__dirname, 'cookies.txt');
+  const ORIGINS_PATH = path.join(__dirname, 'allowOrigins.json');
 
-  const info = await withTempCookies(freshCookies, async (cookiePath) => {
-    return await ytdlp(url, {
-      dumpSingleJson: true,
-      noCheckCertificates: true,
-      noWarnings: true,
-      preferFreeFormats: true,
-      youtubeSkipDashManifest: true,
-      cookies: cookiePath,
-    });
-  });
+  const { action, cookies_txt, origins } = req.body;
 
-  const videoFormats = info.formats
-    .filter(f => f.vcodec !== 'none' && f.acodec !== 'none')
-    .map(f => ({
-      format: f.format,
-      mimeType: f.ext,
-      url: f.url,
-      resolution: f.height ? `${f.height}p` : 'Unknown',
-      size: f.filesize ? `${(f.filesize / (1024 * 1024)).toFixed(2)} MB` : 'Unknown',
-      fps: f.fps || 'Unknown',
-    }));
+  if (!action) return res.status(400).json({ error: 'Action required' });
 
-  if (!videoFormats.length) throw new Error('No video formats found.');
+  if (action === 'get') {
+    let cookiesText = '';
+    let allowOrigins = ['api.arabdullah.top']; // default
 
-  res.json({
-    status: true,
-    title: info.title,
-    thumbnail: info.thumbnail,
-    duration: info.duration_string || `${info.duration} sec`,
-    availableFormats: videoFormats,
-  });
+    try {
+      cookiesText = await fs.readFile(COOKIES_PATH, 'utf-8');
+    } catch (err) {
+      cookiesText = '';
+    }
+
+    try {
+      const originsData = await fs.readFile(ORIGINS_PATH, 'utf-8');
+      allowOrigins = JSON.parse(originsData);
+    } catch (err) {
+      allowOrigins = ['api.arabdullah.top'];
+    }
+
+    return res.json({ cookies_txt: cookiesText, allowOrigins });
+  }
+  if (action === 'update') {
+    const result = {};
+
+    if (cookies_txt !== undefined) {
+      await fs.writeFile(COOKIES_PATH, cookies_txt, 'utf-8');
+      result.cookies_txt = 'updated';
+    }
+
+    if (origins !== undefined) {
+      await fs.writeFile(ORIGINS_PATH, JSON.stringify(origins, null, 2), 'utf-8');
+      result.allowOrigins = 'updated';
+    }
+
+    return res.json({ success: true, ...result });
+  }
 }));
 
 // ✅ Start server

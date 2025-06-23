@@ -45,7 +45,7 @@ function processAudioFormats(info) {
   if (!audioFormats.length) throw new Error('No audio formats found.');
 
   return {
-    status: true,
+    success: true,
     title: info.title,
     thumbnail: info.thumbnail,
     duration: info.duration_string || `${info.duration} sec`,
@@ -69,7 +69,7 @@ function processVideoFormats(info) {
   if (!videoFormats.length) throw new Error('No video formats found.');
 
   return {
-    status: true,
+    success: true,
     title: info.title,
     thumbnail: info.thumbnail,
     duration: info.duration_string || `${info.duration} sec`,

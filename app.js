@@ -103,12 +103,22 @@ function createUrlHandler(endpoint) {
 
     const result = await HANDLERS[endpoint](url);
     
-    if (result && result.success === false) {
-      return res.status(500).json({ error: result.error });
-    }
-    
-    res.json(result.data || result);
+    // ✅ Modified response handling
+if (result && result.success === false) {
+  return res.status(500).json({ 
+      api: 'api.arabdullah.top',
+    success: false, 
+    error: result.error 
   });
+}
+
+res.json({
+  api: 'api.arabdullah.top',
+  success: true,
+  ...(result.data || result) // Spread the data at root level
+});
+
+});
 }
 
 // ✅ Register all endpoints dynamically

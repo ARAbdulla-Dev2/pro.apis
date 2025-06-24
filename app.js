@@ -6,6 +6,8 @@ const { getAudioInfo, getVideoInfoWithFormats } = require('./modules/yt');
 const { handleFbRequest } = require('./modules/fb');
 const { getInstagramMedia } = require('./modules/ig');
 const { getTikTokMedia } = require('./modules/tk');
+const { getYT2Media } = require('./modules/yt2');
+const { getFb2 } = require('./modules/fb2');
 
 const app = express();
 const PORT = 3334;
@@ -16,7 +18,35 @@ const COOKIES_PATH = path.join(__dirname, 'cookies.txt');
 const ORIGINS_PATH = path.join(__dirname, 'allowOrigins.json');
 
 // ✅ Global CORS allow list (updated dynamically)
-let allowList = ['http://localhost:3000', 'https://api.arabdullah.top', 'https://cdn.evelocore.com', 'https://dhero.evelocore.com'];
+let allowList = ['http://localhost:3000', 'https://api.arabdullah.top', 'https://cdn.evelocore.com', 'https://dhero.evelocore.com', 'http://localhost:3334'];
+
+// ✅ URL validation patterns
+const URL_PATTERNS = {
+  ytmp3: { pattern: null, error: 'YouTube URL is required' },
+  ytmp4: { pattern: null, error: 'YouTube URL is required' },
+  yt2: { pattern: null, error: 'YouTube URL is required' },
+  fb: { pattern: null, error: 'Facebook URL is required' },
+  fb2: { pattern: null, error: 'Facebook URL is required' },
+  ig: { 
+    pattern: /https?:\/\/(www\.)?instagram\.com\/(p|reel|tv)\/[a-zA-Z0-9_-]+/,
+    error: 'Invalid Instagram URL format'
+  },
+  tk: {
+    pattern: /https?:\/\/(www\.)?tiktok\.com\/@.+\/video\/\d+/,
+    error: 'Invalid TikTok URL format'
+  }
+};
+
+// ✅ Handler functions for each endpoint
+const HANDLERS = {
+  ytmp3: getAudioInfo,
+  ytmp4: getVideoInfoWithFormats,
+  fb: handleFbRequest,
+  ig: getInstagramMedia,
+  tk: getTikTokMedia,
+  yt2: getYT2Media,
+  fb2: getFb2
+};
 
 // ✅ Load origins from file at startup
 async function loadAllowOrigins() {
@@ -44,7 +74,7 @@ const corsOptionsDelegate = function (req, callback) {
 // ✅ Middleware
 app.use(cors(corsOptionsDelegate));
 app.use(express.json());
-app.use(express.static(path.join(__dirname, 'public'))); // Serve static files from 'public' directory
+app.use(express.static(path.join(__dirname, 'public')));
 
 // ✅ API key validation
 const validateApiKey = (req, res, next) => {
@@ -61,66 +91,30 @@ const asyncHandler = (fn) => (req, res, next) =>
     res.status(500).json({ error: 'Server error', details: err.message });
   });
 
-// ✅ Get audio formats
-app.get('/api/ytmp3', validateApiKey, asyncHandler(async (req, res) => {
-  const { url } = req.query;
-  if (!url) return res.status(400).json({ error: 'YouTube URL is required' });
+// ✅ Generic URL handler creator
+function createUrlHandler(endpoint) {
+  return asyncHandler(async (req, res) => {
+    const { url } = req.query;
+    if (!url) return res.status(400).json({ error: URL_PATTERNS[endpoint].error });
 
-  const result = await getAudioInfo(url);
-  res.json(result);
-}));
+    if (URL_PATTERNS[endpoint].pattern && !url.match(URL_PATTERNS[endpoint].pattern)) {
+      return res.status(400).json({ error: URL_PATTERNS[endpoint].error });
+    }
 
-// ✅ Get video+audio formats
-app.get('/api/ytmp4', validateApiKey, asyncHandler(async (req, res) => {
-  const { url } = req.query;
-  if (!url) return res.status(400).json({ error: 'YouTube URL is required' });
+    const result = await HANDLERS[endpoint](url);
+    
+    if (result && result.success === false) {
+      return res.status(500).json({ error: result.error });
+    }
+    
+    res.json(result.data || result);
+  });
+}
 
-  const result = await getVideoInfoWithFormats(url);
-  res.json(result);
-}));
-
-// ✅ /api/fb - Get Facebook video info
-app.get('/api/fb', validateApiKey, asyncHandler(async (req, res) => {
-  const { url } = req.query;
-  if (!url) return res.status(400).json({ error: 'Facebook URL is required' });
-  
-  const result = await handleFbRequest(url);
-  res.json(result);
-}));
-
-// ✅ /api/ig - Get Instagram video info
-app.get('/api/ig', validateApiKey, asyncHandler(async (req, res) => {
-  const { url } = req.query;
-  if (!url) return res.status(400).json({ error: 'Instagram URL is required' });
-
-  // Validate Instagram URL format
-  if (!url.match(/https?:\/\/(www\.)?instagram\.com\/(p|reel|tv)\/[a-zA-Z0-9_-]+/)) {
-    return res.status(400).json({ error: 'Invalid Instagram URL format' });
-  }
-
-  const result = await getInstagramMedia(url);
-  if (!result.success) {
-    return res.status(500).json({ error: result.error });
-  }
-  res.json(result.data);
-}));
-
-// ✅ /api/tk - Get TikTok video info
-app.get('/api/tk', validateApiKey, asyncHandler(async (req, res) => {
-  const { url } = req.query;
-  if (!url) return res.status(400).json({ error: 'TikTok URL is required' });
-
-  // Validate TikTok URL format
-  if (!url.match(/https?:\/\/(www\.)?tiktok\.com\/@.+\/video\/\d+/)) {
-    return res.status(400).json({ error: 'Invalid TikTok URL format' });
-  }
-
-  const result = await getTikTokMedia(url);
-  if (!result.success) {
-    return res.status(500).json({ error: result.error });
-  }
-  res.json(result.data);
-}));
+// ✅ Register all endpoints dynamically
+Object.keys(HANDLERS).forEach(endpoint => {
+  app.get(`/api/${endpoint}`, validateApiKey, createUrlHandler(endpoint));
+});
 
 // ✅ App data config (cookies + allowed origins)
 app.post('/api/update-appdata', asyncHandler(async (req, res) => {

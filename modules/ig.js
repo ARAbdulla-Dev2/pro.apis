@@ -7,7 +7,6 @@ async function getInstagramMedia(url) {
     
     // Format the response to match your frontend structure
     const formattedData = data.map(item => ({
-      developer: '@prm2.0',
       thumbnail: item.thumbnail || '',
       url: item.url,
       resolution: item.resolution || undefined,

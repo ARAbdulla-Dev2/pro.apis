@@ -7,7 +7,6 @@ async function getTikTokMedia(url) {
     
     // Format the response to match your frontend structure
     const formattedData = {
-      developer: '@prm2.0',
       title: data.title || '',
       title_audio: data.title_audio || '',
       thumbnail: data.thumbnail || '',
